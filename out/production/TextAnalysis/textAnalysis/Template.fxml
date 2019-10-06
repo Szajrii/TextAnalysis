@@ -36,10 +36,9 @@
             </Label>
             <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
                <children>
-                  <Label fx:id="characteramount" prefHeight="47.0" prefWidth="358.0"
-                         text="Amount of characters(spaces including) : " />
-                  <Label prefHeight="41.0" prefWidth="343.0" text="Label" />
-                  <Label prefHeight="42.0" prefWidth="344.0" text="Label" />
+                  <Label fx:id="characteramount" prefHeight="47.0" prefWidth="358.0" text="Amount of characters(spaces including) : " />
+                  <Label fx:id="characteramountnospaces" prefHeight="41.0" prefWidth="343.0" text="Amount of characters:" />
+                  <Label fx:id="wordsamount" prefHeight="42.0" prefWidth="344.0" text="Amount of words: " />
                </children>
             </VBox>
          </children>
