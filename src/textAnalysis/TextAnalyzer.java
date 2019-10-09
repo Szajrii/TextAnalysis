@@ -1,5 +1,8 @@
 package textAnalysis;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.transformation.FilteredList;
 import javafx.fxml.FXML;
 
 import java.awt.*;
@@ -22,7 +25,7 @@ public class TextAnalyzer {
 //    @FXML
 //    private String file;
     @FXML
-    private Label fileChoosen, characteramount, characteramountnospaces, wordsamount, characters, mostoccur;
+    private Label fileChoosen, characteramount, characteramountnospaces, wordsamount, characters, mostoccur, characterChoosen;
     @FXML
     private ChoiceBox choice;
 
@@ -62,9 +65,19 @@ public class TextAnalyzer {
 
         characters.setText(charactersString.toString());
         mostoccur.setText(findMostOccurences(charactersMap));
+
         setChoiceBox(charactersMap);
         choice.setStyle("-fx-opacity: 1");
 
+        //Choice box controller
+        choice.getSelectionModel().selectedIndexProperty().addListener(new ChangeListener<Number>() {
+            @Override
+            public void changed(ObservableValue<? extends Number> observableValue, Number number, Number number2) {
+                characterChoosen.setText("Character " + "'" + choice.getItems().get((Integer) number2) + "' has " +
+                        "occured " +
+                        charactersMap.get(choice.getItems().get((Integer) number2)) + " times");
+            }
+        });
 
         bufferedReader.close();
     }
@@ -82,7 +95,6 @@ public class TextAnalyzer {
         } catch (IOException ex) {
             System.out.println("Error has occured");
         }
-        System.out.println(text);
         return text;
     }
 
@@ -131,19 +143,16 @@ public class TextAnalyzer {
                 occurences = entry.getValue();
             }else {}
         }
-        return "Most occurences in character " + key + " : " + occurences + " times.";
+        return "Most occurences in character '" + key + "' : " + occurences + " times.";
 
     }
 
     private void setChoiceBox(HashMap<String, Integer> map) {
 
-//        ArrayList<Integer> arr = new ArrayList<>(map.values());
-//        //for (HashMap.Entry<String, Integer> entry : map.entrySet()) {
-//            choiceBox.setValue(1);
-////        }
+        ArrayList<Integer> arr = new ArrayList<>(map.values());
+        for (HashMap.Entry<String, Integer> entry : map.entrySet()) {
+            choice.getItems().add("" + entry.getKey());
+        }
 
-        choice.setValue(1);
     }
-
-
 }
