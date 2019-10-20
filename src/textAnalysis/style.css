@@ -1,3 +1,27 @@
-#characters {
+#border {
+    -fx-background-color: #e9ffcc;
+}
 
+.button {
+    -fx-background-color: #b6ac71;
+    -fx-border-radius: 20px;
+    -fx-border-style: none;
+}
+
+#center {
+    -fx-background-color: #ffae98;
+}
+
+#split {
+    -fx-background-color: #ffb868;
+}
+
+#anchor2 {
+    -fx-background-color: #92c993;
+}
+
+.choice-box .context-menu {
+    -fx-pref-height: 350px;
+    -fx-pref-width: 70px;
+    -fx-background-color: rgba(255, 219, 200, 0.6);
 }
