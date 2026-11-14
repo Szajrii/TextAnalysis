@@ -1,87 +1,307 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.Insets?>
+<?import javafx.scene.chart.BarChart?>
+<?import javafx.scene.chart.CategoryAxis?>
+<?import javafx.scene.chart.NumberAxis?>
+<?import javafx.scene.chart.PieChart?>
 <?import javafx.scene.control.Button?>
+<?import javafx.scene.control.CheckBox?>
 <?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ComboBox?>
 <?import javafx.scene.control.Label?>
-<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ProgressBar?>
+<?import javafx.scene.control.Separator?>
 <?import javafx.scene.control.SplitPane?>
-<?import javafx.scene.layout.AnchorPane?>
+<?import javafx.scene.control.Tab?>
+<?import javafx.scene.control.TabPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Priority?>
+<?import javafx.scene.layout.Region?>
 <?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.layout.VBox?>
-<?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="587.0"
-            prefWidth="600.0" xmlns="http://javafx.com/javafx/8.0.171" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="textAnalysis.TextAnalyzer" id="border">
-   <top>
-      <GridPane prefHeight="127.0" prefWidth="600.0" BorderPane.alignment="CENTER">
-        <columnConstraints>
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="600.0" minWidth="10.0" prefWidth="113.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="505.0" minWidth="0.0" prefWidth="145.0" />
-            <ColumnConstraints hgrow="SOMETIMES" maxWidth="505.0" minWidth="10.0" prefWidth="343.0" />
-        </columnConstraints>
-        <rowConstraints>
-          <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-        </rowConstraints>
-         <children>
-            <Button mnemonicParsing="false" onAction="#chooseFile" text="Upload File">
-               <GridPane.margin>
-                  <Insets left="15.0" />
-               </GridPane.margin>
-            </Button>
-            <Label fx:id="fileChoosen" prefHeight="53.0" prefWidth="130.0" style="-fx-pref-height: 60px;" text="None file selected" GridPane.columnIndex="1">
-               <GridPane.margin>
-                  <Insets />
-               </GridPane.margin>
-               <padding>
-                  <Insets left="10.0" />
-               </padding>
-            </Label>
-            <VBox prefHeight="200.0" prefWidth="100.0" GridPane.columnIndex="2">
-               <children>
-                  <Label fx:id="characteramount" prefHeight="47.0" prefWidth="358.0" text="Amount of characters(spaces including) : " />
-                  <Label fx:id="characteramountnospaces" prefHeight="41.0" prefWidth="343.0" text="Amount of characters:" />
-                  <Label fx:id="wordsamount" prefHeight="42.0" prefWidth="344.0" text="Amount of words: " />
-               </children>
-            </VBox>
-         </children>
-      </GridPane>
-   </top>
-   <center>
-      <ScrollPane prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER" id="center">
-         <content>
-            <SplitPane dividerPositions="0.29797979797979796" prefHeight="458.0" prefWidth="598.0" id="split">
-              <items>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" id="anchor">
-                     <children>
-                        <ScrollPane layoutX="1.0" prefHeight="461.0" prefWidth="173.0" id="scroll">
-                           <content>
-                              <Label fx:id="characters">
-                                 <font>
-                                    <Font size="14.0" />
-                                 </font>
-                                 <padding>
-                                    <Insets left="20.0" />
-                                 </padding>
-                              </Label>
-                           </content>
-                        </ScrollPane>
-                     </children>
-                  </AnchorPane>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="160.0" prefWidth="100.0" id="anchor2">
-                     <children>
-                        <Label fx:id="mostoccur" alignment="TOP_LEFT" layoutX="40.0" layoutY="14.0" prefHeight="17.0" prefWidth="311.0" />
-                        <ChoiceBox fx:id="choice" layoutX="130.0" layoutY="136.0" prefWidth="150.0" style="-fx-opacity: 0;" />
-                        <Label fx:id="characterChoosen" layoutX="89.0" layoutY="228.0" prefHeight="17.0" prefWidth="248.0" />
-                     </children>
-                  </AnchorPane>
-              </items>
-            </SplitPane>
-         </content>
-      </ScrollPane>
-   </center>
+<BorderPane fx:id="rootPane" prefHeight="780.0" prefWidth="1180.0" styleClass="root-pane"
+            xmlns="http://javafx.com/javafx/21" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="textAnalysis.TextAnalyzer">
+
+    <!-- TOP: Header + KPI Cards -->
+    <top>
+        <VBox spacing="14.0" styleClass="top-container">
+            <padding>
+                <Insets bottom="12.0" left="20.0" right="20.0" top="16.0"/>
+            </padding>
+
+            <!-- Top Action Bar -->
+            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="header-bar">
+                <VBox spacing="2.0">
+                    <HBox alignment="CENTER_LEFT" spacing="10.0">
+                        <Label styleClass="app-title" text="TextAnalyzer Studio"/>
+                        <Label fx:id="languageBadge" styleClass="badge-accent" text="Polski (PL)"/>
+                        <Label fx:id="statusBadge" styleClass="badge-subtle" text="Gotowy"/>
+                    </HBox>
+                    <Label fx:id="fileChoosen" styleClass="file-subtitle"
+                           text="Źródło: Tekst demonstracyjny (przeciągnij plik tutaj lub kliknij Wczytaj plik)"/>
+                </VBox>
+
+                <Region HBox.hgrow="ALWAYS"/>
+
+                <Button onAction="#chooseFile" styleClass="btn-primary" text="📂 Wczytaj plik..."/>
+                <Button onAction="#loadSampleText" styleClass="btn-secondary" text="✨ Inny przykład"/>
+                <Button onAction="#copyReportToClipboard" styleClass="btn-secondary" text="📋 Kopiuj raport"/>
+                <Button onAction="#exportReport" styleClass="btn-secondary" text="💾 Eksportuj..."/>
+            </HBox>
+
+            <!-- 6 KPI Summary Cards -->
+            <GridPane hgap="12.0" vgap="12.0">
+                <columnConstraints>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.66"/>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.66"/>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.66"/>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.66"/>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.66"/>
+                    <ColumnConstraints hgrow="ALWAYS" percentWidth="16.70"/>
+                </columnConstraints>
+                <rowConstraints>
+                    <RowConstraints minHeight="84.0" vgrow="SOMETIMES"/>
+                </rowConstraints>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="0">
+                    <Label styleClass="kpi-title" text="ZNAKI (ŁĄCZNIE)"/>
+                    <Label fx:id="characteramount" styleClass="kpi-value" text="0"/>
+                    <Label fx:id="characteramountnospaces" styleClass="kpi-sub" text="Bez spacji: 0"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="1">
+                    <Label styleClass="kpi-title" text="SŁOWA I SŁOWNICTWO"/>
+                    <Label fx:id="wordsamount" styleClass="kpi-value" text="0"/>
+                    <Label fx:id="uniqueWordsLabel" styleClass="kpi-sub" text="Unikalne: 0 (0%)"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="2">
+                    <Label styleClass="kpi-title" text="STRUKTURA TEKSTU"/>
+                    <Label fx:id="sentencesAmountLabel" styleClass="kpi-value" text="0 zdań"/>
+                    <Label fx:id="paragraphsLinesLabel" styleClass="kpi-sub" text="Akapity: 0 • Linie: 0"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="3">
+                    <Label styleClass="kpi-title" text="SZACOWANY CZAS"/>
+                    <Label fx:id="readingTimeLabel" styleClass="kpi-value" text="0 s"/>
+                    <Label fx:id="speakingTimeLabel" styleClass="kpi-sub" text="Mowa (~130 sł./min): 0 s"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="4">
+                    <Label styleClass="kpi-title" text="INDEKS CZYTELNOŚCI"/>
+                    <Label fx:id="readabilityScoreLabel" styleClass="kpi-value" text="0.0 / 100"/>
+                    <Label fx:id="readabilityDescLabel" styleClass="kpi-sub" text="Brak danych"/>
+                </VBox>
+
+                <VBox styleClass="kpi-card" GridPane.columnIndex="5">
+                    <Label styleClass="kpi-title" text="CECHY WYRAZÓW"/>
+                    <Label fx:id="avgWordLenLabel" styleClass="kpi-value" text="0.0 zn."/>
+                    <Label fx:id="longestWordLabel" styleClass="kpi-sub" text="Najdłuższe: —"/>
+                </VBox>
+            </GridPane>
+        </VBox>
+    </top>
+
+    <!-- CENTER: Tabbed Workspace -->
+    <center>
+        <TabPane fx:id="mainTabPane" styleClass="main-tabs" tabClosingPolicy="UNAVAILABLE">
+            <tabs>
+                <!-- TAB 1: DASHBOARD & CHARTS -->
+                <Tab text="📊 Wizualizacja i Wykresy">
+                    <SplitPane dividerPositions="0.38" styleClass="content-split">
+                        <padding>
+                            <Insets bottom="16.0" left="20.0" right="20.0" top="14.0"/>
+                        </padding>
+
+                        <!-- Left Panel: Composition PieChart & Breakdown -->
+                        <VBox spacing="12.0" styleClass="panel-card">
+                            <Label styleClass="section-title" text="Struktura znaków i profil tekstu"/>
+                            <PieChart fx:id="charCompositionPieChart" labelsVisible="true" legendVisible="true"
+                                      prefHeight="260.0" VBox.vgrow="ALWAYS"/>
+
+                            <Separator/>
+
+                            <GridPane hgap="12.0" vgap="8.0">
+                                <columnConstraints>
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="55.0"/>
+                                    <ColumnConstraints hgrow="SOMETIMES" percentWidth="45.0"/>
+                                </columnConstraints>
+                                <Label styleClass="stat-row-label" text="Litery (wielkie / małe):" GridPane.columnIndex="0" GridPane.rowIndex="0"/>
+                                <Label fx:id="lettersBreakdownLabel" styleClass="stat-row-value" text="0 (0 / 0)" GridPane.columnIndex="1" GridPane.rowIndex="0"/>
+
+                                <Label styleClass="stat-row-label" text="Cyfry i znaki interpunkcyjne:" GridPane.columnIndex="0" GridPane.rowIndex="1"/>
+                                <Label fx:id="digitsPunctLabel" styleClass="stat-row-value" text="0 / 0" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+
+                                <Label styleClass="stat-row-label" text="Średnia długość zdania:" GridPane.columnIndex="0" GridPane.rowIndex="2"/>
+                                <Label fx:id="avgSentenceLenLabel" styleClass="stat-row-value" text="0.0 słów" GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+
+                                <Label styleClass="stat-row-label" text="Sylaby / Słowa trudne (≥3 syl.):" GridPane.columnIndex="0" GridPane.rowIndex="3"/>
+                                <Label fx:id="syllablesComplexLabel" styleClass="stat-row-value" text="0 / 0" GridPane.columnIndex="1" GridPane.rowIndex="3"/>
+
+                                <Label styleClass="stat-row-label" text="Indeks Gunning Fog:" GridPane.columnIndex="0" GridPane.rowIndex="4"/>
+                                <Label fx:id="fogIndexLabel" styleClass="stat-row-value" text="0.0" GridPane.columnIndex="1" GridPane.rowIndex="4"/>
+                            </GridPane>
+                        </VBox>
+
+                        <!-- Right Panel: Interactive BarChart -->
+                        <VBox spacing="12.0" styleClass="panel-card">
+                            <HBox alignment="CENTER_LEFT" spacing="12.0">
+                                <Label styleClass="section-title" text="Wykres rozkładu częstości"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <Label styleClass="filter-label" text="Tryb wykresu:"/>
+                                <ComboBox fx:id="chartModeCombo" prefWidth="260.0"/>
+                            </HBox>
+
+                            <BarChart fx:id="frequencyBarChart" animated="false" categoryGap="8.0" legendVisible="false"
+                                      VBox.vgrow="ALWAYS">
+                                <xAxis>
+                                    <CategoryAxis fx:id="barChartXAxis" label="Element"/>
+                                </xAxis>
+                                <yAxis>
+                                    <NumberAxis fx:id="barChartYAxis" label="Liczba wystąpień"/>
+                                </yAxis>
+                            </BarChart>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+
+                <!-- TAB 2: CHARACTER EXPLORER & INSPECTOR -->
+                <Tab text="🔤 Analiza Znaków">
+                    <SplitPane dividerPositions="0.62" styleClass="content-split">
+                        <padding>
+                            <Insets bottom="16.0" left="20.0" right="20.0" top="14.0"/>
+                        </padding>
+
+                        <!-- Left: Character Table with Filters -->
+                        <VBox spacing="10.0" styleClass="panel-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="section-title" text="Tabela częstości znaków"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="charSearchField" prefWidth="150.0" promptText="🔍 Filtruj znak..."/>
+                                <ComboBox fx:id="charCategoryCombo" prefWidth="175.0"/>
+                                <CheckBox fx:id="caseSensitiveCheck" mnemonicParsing="false" text="Rozróżniaj A/a"/>
+                            </HBox>
+
+                            <TableView fx:id="charTableView" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="charRankCol" prefWidth="55.0" text="#"/>
+                                    <TableColumn fx:id="charSymbolCol" prefWidth="130.0" text="Znak"/>
+                                    <TableColumn fx:id="charUnicodeCol" prefWidth="95.0" text="Unicode"/>
+                                    <TableColumn fx:id="charCategoryCol" prefWidth="145.0" text="Kategoria"/>
+                                    <TableColumn fx:id="charCountCol" prefWidth="105.0" text="Wystąpienia"/>
+                                    <TableColumn fx:id="charPercentCol" prefWidth="110.0" text="Udział (%)"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+
+                        <!-- Right: Character Inspector & Quick Selector -->
+                        <VBox spacing="14.0" styleClass="panel-card">
+                            <Label styleClass="section-title" text="Inspektor wybranego znaku"/>
+
+                            <HBox alignment="CENTER_LEFT" spacing="12.0" styleClass="inspector-hero">
+                                <StackPane prefHeight="72.0" prefWidth="72.0" styleClass="char-preview-box">
+                                    <Label fx:id="inspectorBigChar" styleClass="char-preview-text" text="a"/>
+                                </StackPane>
+                                <VBox spacing="4.0" HBox.hgrow="ALWAYS">
+                                    <Label fx:id="mostoccur" styleClass="inspector-headline" text="Najczęstszy znak: —"/>
+                                    <Label fx:id="characterChoosen" styleClass="inspector-sub" text="Wybierz znak z tabeli lub listy poniżej"/>
+                                    <ProgressBar fx:id="inspectorProgressBar" maxWidth="Infinity" progress="0.0" styleClass="accent-progress"/>
+                                </VBox>
+                            </HBox>
+
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="filter-label" text="Szybki wybór znaku:"/>
+                                <ChoiceBox fx:id="choice" prefWidth="190.0"/>
+                            </HBox>
+
+                            <Separator/>
+
+                            <Label styleClass="filter-label" text="Kontekst wystąpień w tekście (próbka zdań/linii):"/>
+                            <ListView fx:id="charContextListView" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+
+                <!-- TAB 3: VOCABULARY & N-GRAMS -->
+                <Tab text="📖 Słownictwo i Frazy (N-gramy)">
+                    <SplitPane dividerPositions="0.62" styleClass="content-split">
+                        <padding>
+                            <Insets bottom="16.0" left="20.0" right="20.0" top="14.0"/>
+                        </padding>
+
+                        <VBox spacing="10.0" styleClass="panel-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="section-title" text="Ranking słów i wyrażeń"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <TextField fx:id="wordSearchField" prefWidth="200.0" promptText="🔍 Szukaj słowa lub frazy..."/>
+                                <ComboBox fx:id="vocabModeCombo" prefWidth="250.0"/>
+                            </HBox>
+
+                            <TableView fx:id="wordTableView" VBox.vgrow="ALWAYS">
+                                <columns>
+                                    <TableColumn fx:id="wordRankCol" prefWidth="60.0" text="#"/>
+                                    <TableColumn fx:id="wordTokenCol" prefWidth="260.0" text="Słowo / Fraza"/>
+                                    <TableColumn fx:id="wordCountCol" prefWidth="120.0" text="Liczba wystąpień"/>
+                                    <TableColumn fx:id="wordPercentCol" prefWidth="120.0" text="Udział (%)"/>
+                                </columns>
+                            </TableView>
+                        </VBox>
+
+                        <VBox spacing="12.0" styleClass="panel-card">
+                            <Label styleClass="section-title" text="Konkordancja (wystąpienia w zdaniach)"/>
+                            <Label fx:id="selectedWordSummaryLabel" styleClass="inspector-sub"
+                                   text="Kliknij dowolne słowo lub frazę w tabeli po lewej stronie, aby zobaczyć wszystkie zdania, w których występuje."/>
+                            <ListView fx:id="wordConcordanceListView" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+
+                <!-- TAB 4: LIVE EDITOR & REGEX SEARCH -->
+                <Tab text="✍️ Edytor na żywo i Wyszukiwarka">
+                    <SplitPane dividerPositions="0.65" styleClass="content-split">
+                        <padding>
+                            <Insets bottom="16.0" left="20.0" right="20.0" top="14.0"/>
+                        </padding>
+
+                        <VBox spacing="10.0" styleClass="panel-card">
+                            <HBox alignment="CENTER_LEFT" spacing="10.0">
+                                <Label styleClass="section-title" text="Edytor badanego tekstu"/>
+                                <Region HBox.hgrow="ALWAYS"/>
+                                <CheckBox fx:id="liveAutoUpdateCheck" mnemonicParsing="false" selected="true"
+                                          text="Analizuj automatycznie podczas pisania"/>
+                                <Button onAction="#analyzeFromEditor" styleClass="btn-primary" text="⚡ Przelicz teraz"/>
+                                <Button onAction="#clearEditor" styleClass="btn-secondary" text="Wyczyść"/>
+                            </HBox>
+
+                            <TextArea fx:id="liveEditorArea" promptText="Wklej lub wpisz tutaj dowolny tekst albo przeciągnij plik tekstowy na okno aplikacji..."
+                                       styleClass="code-editor" wrapText="true" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+
+                        <VBox spacing="10.0" styleClass="panel-card">
+                            <Label styleClass="section-title" text="Wyszukiwarka wzorców i wyrażeń (Regex)"/>
+                            <HBox alignment="CENTER_LEFT" spacing="8.0">
+                                <TextField fx:id="regexInputField" promptText="Wpisz szukane słowo lub wyrażenie regularne..." HBox.hgrow="ALWAYS"/>
+                                <CheckBox fx:id="regexModeCheck" mnemonicParsing="false" text="Regex"/>
+                                <Button onAction="#runPatternSearch" styleClass="btn-secondary" text="Szukaj"/>
+                            </HBox>
+                            <Label fx:id="regexResultLabel" styleClass="inspector-sub" text="Wpisz frazę, aby przeszukać linie tekstu."/>
+                            <ListView fx:id="regexMatchesListView" VBox.vgrow="ALWAYS"/>
+                        </VBox>
+                    </SplitPane>
+                </Tab>
+            </tabs>
+        </TabPane>
+    </center>
 </BorderPane>
